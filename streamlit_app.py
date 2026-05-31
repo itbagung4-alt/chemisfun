@@ -3,70 +3,71 @@ import math
 from chempy import balance_stoichiometry
 
 # --- 1. KONFIGURASI HALAMAN ---
-st.set_page_config(page_title="Chemical Metathesis Engine", page_icon="🧪", layout="centered")
+st.set_page_config(page_title="Reaksi Metatesis", page_icon="🧪", layout="centered")
 
 # --- 2. MANAGEMENT HALAMAN (SESSION STATE) ---
 if 'halaman_utama' not in st.session_state:
     st.session_state.halaman_utama = False
 
 # --- 3. CUSTOM STYLING (CSS INTERAKTIF) ---
+# Penulisan CSS ditaruh rata kiri agar tidak terbaca sebagai raw code
 st.markdown("""
-    <style>
-    /* Desain Halaman Cover */
-    .cover-box {
-        text-align: center;
-        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
-        padding: 50px 30px;
-        border-radius: 20px;
-        color: white;
-        box-shadow: 0 15px 35px rgba(30, 58, 138, 0.2);
-        margin-bottom: 30px;
-    }
-    .cover-title {
-        font-family: 'Arial Black', Gadget, sans-serif;
-        font-size: 40px;
-        font-weight: 900;
-        letter-spacing: -1px;
-        margin-bottom: 10px;
-        line-height: 1.2;
-    }
-    .cover-subtitle {
-        font-size: 16px;
-        opacity: 0.9;
-        font-weight: 300;
-        margin-bottom: 40px;
-    }
-    .cover-card-team {
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 12px;
-        padding: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        max-width: 450px;
-        margin: 0 auto;
-    }
-    .team-label {
-        font-size: 12px;
-        font-weight: bold;
-        letter-spacing: 3px;
-        color: #FBBF24; /* Warna Gold */
-        margin-bottom: 15px;
-        text-transform: uppercase;
-    }
-    .member-name {
-        font-size: 17px;
-        font-weight: 500;
-        margin: 6px 0;
-    }
-    
-    /* Desain Core App */
-    .app-header {
-        font-size: 32px;
-        font-weight: 800;
-        color: #1E3A8A;
-        margin-bottom: 5px;
-    }
-    </style>
+<style>
+/* Desain Halaman Cover */
+.cover-box {
+    text-align: center;
+    background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+    padding: 50px 30px;
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 15px 35px rgba(30, 58, 138, 0.2);
+    margin-bottom: 30px;
+}
+.cover-title {
+    font-family: 'Arial Black', Gadget, sans-serif;
+    font-size: 40px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+.cover-subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    font-weight: 300;
+    margin-bottom: 40px;
+}
+.cover-card-team {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    max-width: 450px;
+    margin: 0 auto;
+}
+.team-label {
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #FBBF24; /* Warna Gold */
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+.member-name {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 6px 0;
+}
+
+/* Desain Core App */
+.app-header {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1E3A8A;
+    margin-bottom: 5px;
+}
+</style>
 """, unsafe_allow_html=True)
 
 
@@ -75,21 +76,21 @@ st.markdown("""
 # ==============================================================================
 if not st.session_state.halaman_utama:
     
-    # Elemen Visual Cover
+    # Elemen Visual Cover (Rata kiri agar HTML terbaca dengan benar)
     st.markdown("""
-        <div class="cover-box">
-            <div class="cover-title">🧪 ENGINE REAKSI METATESIS</div>
-            <div class="cover-subtitle">Aplikasi Pintar Prediksi Produk, Penyetaraan Stoikiometri, <br>dan Verifikasi Kelarutan Zat Analitis</div>
-            
-            <div class="cover-card-team">
-                <div class="team-label">👥 Kelompok Pengembang</div>
-                <div class="member-name">✨ Agung Nugraha</div>
-                <div class="member-name">✨ Alifia Citra Nabila</div>
-                <div class="member-name">✨ Haifa Maulafida</div>
-                <div class="member-name">✨ Nabila Putri Khorinnisa</div>
-                <div class="member-name">✨ Rania Ayudia</div>
-            </div>
-        </div>
+<div class="cover-box">
+    <div class="cover-title">🧪 REAKSI METATESIS</div>
+    <div class="cover-subtitle">Aplikasi Pintar Prediksi Produk, Penyetaraan Stoikiometri, <br>dan Verifikasi Kelarutan Zat Analitis</div>
+    
+    <div class="cover-card-team">
+        <div class="team-label">👥 Kelompok Pengembang</div>
+        <div class="member-name">✨ Agung Nugraha</div>
+        <div class="member-name">✨ Alifia Citra Nabila</div>
+        <div class="member-name">✨ Haifa Maulafida</div>
+        <div class="member-name">✨ Nabila Putri Khorinnisa</div>
+        <div class="member-name">✨ Rania Ayudia</div>
+    </div>
+</div>
     """, unsafe_allow_html=True)
     
     # Tombol Masuk yang Besar dan Menarik
@@ -205,7 +206,7 @@ else:
                 produk1 = gabung_ion(k1, a2)
                 produk2 = gabung_ion(k2, a1)
                 mengendap_p1 = apakah_mengendap(k1, a2)
-                mengendap_p2 = apiKey = apakah_mengendap(k2, a1)
+                mengendap_p2 = apakah_mengendap(k2, a1)
                 
                 try:
                     r_setara, p_setara = balance_stoichiometry({reaktan1, reaktan2}, {produk1, produk2})
