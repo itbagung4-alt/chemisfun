@@ -10,7 +10,6 @@ if 'halaman_utama' not in st.session_state:
     st.session_state.halaman_utama = False
 
 # --- 3. CUSTOM STYLING (CSS INTERAKTIF) ---
-# Penulisan CSS ditaruh rata kiri agar tidak terbaca sebagai raw code
 st.markdown("""
 <style>
 /* Desain Halaman Cover */
@@ -50,7 +49,7 @@ st.markdown("""
     font-size: 12px;
     font-weight: bold;
     letter-spacing: 3px;
-    color: #FBBF24; /* Warna Gold */
+    color: #FBBF24;
     margin-bottom: 15px;
     text-transform: uppercase;
 }
@@ -76,24 +75,22 @@ st.markdown("""
 # ==============================================================================
 if not st.session_state.halaman_utama:
     
-    # Elemen Visual Cover (Rata kiri agar HTML terbaca dengan benar)
+    # Elemen Visual Cover (Semua baris HTML HARUS rata kiri penuh tanpa spasi awal)
     st.markdown("""
 <div class="cover-box">
-    <div class="cover-title">🧪 REAKSI METATESIS</div>
-    <div class="cover-subtitle">Aplikasi Pintar Prediksi Produk, Penyetaraan Stoikiometri, <br>dan Verifikasi Kelarutan Zat Analitis</div>
-    
-    <div class="cover-card-team">
-        <div class="team-label">👥 Kelompok Pengembang</div>
-        <div class="member-name">✨ Agung Nugraha</div>
-        <div class="member-name">✨ Alifia Citra Nabila</div>
-        <div class="member-name">✨ Haifa Maulafida</div>
-        <div class="member-name">✨ Nabila Putri Khorinnisa</div>
-        <div class="member-name">✨ Rania Ayudia</div>
-    </div>
+<div class="cover-title">🧪 REAKSI METATESIS</div>
+<div class="cover-subtitle">Aplikasi Pintar Prediksi Produk, Penyetaraan Stoikiometri, <br>dan Verifikasi Kelarutan Zat Analitis</div>
+<div class="cover-card-team">
+<div class="team-label">👥 Kelompok Pengembang</div>
+<div class="member-name">✨ Agung Nugraha</div>
+<div class="member-name">✨ Alifia Citra Nabila</div>
+<div class="member-name">✨ Haifa Maulafida</div>
+<div class="member-name">✨ Nabila Putri Khorinnisa</div>
+<div class="member-name">✨ Rania Ayudia</div>
+</div>
 </div>
     """, unsafe_allow_html=True)
     
-    # Tombol Masuk yang Besar dan Menarik
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if st.button("KLIK UNTUK MASUK APLIKASI ➔", type="primary", use_container_width=True):
@@ -107,7 +104,6 @@ if not st.session_state.halaman_utama:
 # SCREEN 2: HALAMAN INTI / CORE APPLICATION
 # ==============================================================================
 else:
-    # Tombol Navigasi Kembali ke Cover di bagian atas secara elegan
     if st.button("⬅ Kembali ke Cover", type="secondary"):
         st.session_state.halaman_utama = False
         st.rerun()
