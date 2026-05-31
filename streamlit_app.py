@@ -2,17 +2,14 @@ import streamlit as st
 import math
 from chempy import balance_stoichiometry
 
-# --- 1. DATABASE ION DASAR ---
-# Format: 'Simbol': (Muatan, Apakah Poliatomik?)
 # --- 1. DATABASE ION SUPER LENGKAP ---
 # Format: 'Simbol': (Muatan, Apakah Poliatomik?)
-
 kation_db = {
     # Golongan 1 (Alkali) & Hidrogen (+1)
     'H': (1, False), 'Li': (1, False), 'Na': (1, False), 'K': (1, False), 'Rb': (1, False), 'Cs': (1, False),
     # Golongan 2 (Alkali Tanah) (+2)
     'Be': (2, False), 'Mg': (2, False), 'Ca': (2, False), 'Sr': (2, False), 'Ba': (2, False),
-    # Logam Transisi & Utama Lainnya (Menggunakan Valensi Paling Umum/Stabil)
+    # Logam Transisi & Utama Lainnya
     'Ag': (1, False), 'Zn': (2, False), 'Cd': (2, False), 'Al': (3, False), 'Bi': (3, False),
     'Cu': (2, False), 'Fe': (3, False), 'Pb': (2, False), 'Ni': (2, False), 'Co': (2, False), 
     'Mn': (2, False), 'Cr': (3, False), 'Sn': (2, False), 'Hg': (2, False),
@@ -34,7 +31,6 @@ anion_db = {
     'C2O4': (-2, True), 'S2O3': (-2, True), 'HPO4': (-2, True),
     # Anion Poliatomik & Tunggal (-3)
     'PO4': (-3, True), 'PO3': (-3, True), 'AsO4': (-3, True), 'N': (-3, False), 'P': (-3, False)
-}
 }
 
 # --- 2. FUNGSI LOGIKA KIMIA ---
@@ -111,7 +107,7 @@ if st.button("Proses Reaksi", type="primary"):
     k2, a2 = urai_senyawa(reaktan2)
     
     if not (k1 and a1 and k2 and a2):
-        st.error("❌ Senyawa tidak dikenali atau di luar database. Pastikan format penulisan benar (huruf besar/kecil sesuai kaidah kimia).")
+        st.error("❌ Senyawa tidak dikenali atau di luar database. Pastikan format penulisan benar (huruf besar/kecil sesuai kaidah kimia, contoh: NaCl bukan nacl).")
     else:
         # Tahap 2: Silangkan Ion (Metatesis)
         # Kation 1 + Anion 2 | Kation 2 + Anion 1
@@ -161,4 +157,4 @@ if st.button("Proses Reaksi", type="primary"):
             st.error(f"❌ Terjadi kesalahan pada kalkulasi stoikiometri: {e}")
 
 st.divider()
-st.caption("Dikembangkan oleh: Agung Nugraha (NIM 2560557) - D3 Analisis Kimia")
+st.caption("Dikembangkan oleh: Agung Nugraha (NIM 2560557) - D3 Analisis Kimia, Politeknik AKA Bogor")
