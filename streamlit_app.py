@@ -1,78 +1,41 @@
 import streamlit as st
-from chempy import balance_stoichiometry
 
-# Pengaturan dasar halaman web
-st.set_page_config(page_title="Penyetaraan Reaksi Metatesis", page_icon="🧪", layout="centered")
+# Pengaturan halaman
+st.set_page_config(page_title="Penyetaraan Metatesis", page_icon="🧪", layout="centered")
 
-# Judul dan deskripsi
-st.title("🧪 Kalkulator Reaksi Metatesis")
-st.markdown("""
-Aplikasi web sederhana ini akan membantu Anda menyetarakan reaksi kimia, khususnya **Reaksi Metatesis (Pertukaran Ganda)**, 
-sekaligus memberikan penjelasan singkat mengenai prosesnya.
-""")
+# Header
+st.title("🧪 Penyetaraan Reaksi Metatesis")
+st.markdown("Web ini menjelaskan proses penyetaraan reaksi pertukaran ganda (metatesis) secara langkah demi langkah.")
 
 st.divider()
 
-# Form input reaktan dan produk
-st.subheader("Masukkan Senyawa Kimia")
-st.info("Gunakan format kimia standar dan perhatikan huruf besar/kecil (contoh: AgNO3, NaCl, BaCl2). Pisahkan setiap senyawa dengan tanda koma.")
+# Reaksi awal
+st.subheader("Reaksi yang Belum Setara")
+st.markdown("Reaksi antara Perak Nitrat dan Barium Klorida:")
+st.latex(r"AgNO_3(aq) + BaCl_2(aq) \rightarrow AgCl(s) + Ba(NO_3)_2(aq)")
 
-col1, col2 = st.columns(2)
-
-with col1:
-    # Input reaktan dari user
-    reaktan_input = st.text_input("Reaktan (Kiri)", "AgNO3, NaCl")
-
-with col2:
-    # Input produk dari user
-    produk_input = st.text_input("Produk (Kanan)", "AgCl, NaNO3")
-
-# Tombol untuk mengeksekusi penyetaraan
+# Tombol interaktif
 if st.button("Setarakan Reaksi", type="primary"):
-    try:
-        # Membersihkan spasi dan memisahkan input berdasarkan koma
-        reaktan_list = {x.strip() for x in reaktan_input.split(',')}
-        produk_list = {x.strip() for x in produk_input.split(',')}
-        
-        # Proses penyetaraan menggunakan chempy
-        reaktan_setara, produk_setara = balance_stoichiometry(reaktan_list, produk_list)
-        
-        st.success("✅ Reaksi Berhasil Disetarakan!")
-        
-        # Fungsi untuk merapikan tampilan angka koefisien
-        def format_reaksi(senyawa_dict):
-            hasil = []
-            for senyawa, koefisien in senyawa_dict.items():
-                if koefisien == 1:
-                    hasil.append(f"{senyawa}")
-                else:
-                    hasil.append(f"{koefisien}{senyawa}")
-            return " + ".join(hasil)
-            
-        reaksi_kiri = format_reaksi(reaktan_setara)
-        reaksi_kanan = format_reaksi(produk_setara)
-        
-        # Menampilkan hasil
-        st.markdown(f"### Hasil Reaksi:\n**{reaksi_kiri} ➔ {reaksi_kanan}**")
-        
-        st.divider()
-        
-        # Penjelasan konsep metatesis
-        st.subheader("💡 Penjelasan Reaksi Metatesis")
-        st.markdown("""
-        Reaksi yang Anda masukkan adalah contoh dari **Reaksi Metatesis** (atau reaksi pertukaran ganda). 
-        Dalam reaksi ini, kation (ion positif) dan anion (ion negatif) dari dua senyawa reaktan saling bertukar pasangan untuk membentuk dua senyawa produk yang baru.
-        
-        **Pola Umum Reaksi:**
-        """)
-        
-        st.latex(r"AB + CD \rightarrow AD + CB")
-        
-        st.markdown("""
-        **Langkah Penyetaraan:**
-        Koefisien (angka di depan senyawa kimia) yang ditambahkan di atas berfungsi agar jumlah atom pada reaktan (kiri) sama persis dengan jumlah atom pada produk (kanan). Hal ini wajib dilakukan untuk memenuhi **Hukum Kekekalan Massa**.
-        """)
-        
-    except Exception as e:
-        # Menampilkan pesan error jika rumus kimia salah ketik atau tidak masuk akal
-        st.error(f"❌ Terjadi kesalahan! Pastikan rumus kimia yang Anda masukkan benar, perhatikan huruf besar/kecil, dan reaksi tersebut secara teori bisa disetarakan.")
+    
+    # Reaksi akhir
+    st.success("Reaksi berhasil disetarakan!")
+    st.latex(r"2AgNO_3(aq) + BaCl_2(aq) \rightarrow 2AgCl(s) + Ba(NO_3)_2(aq)")
+    
+    st.divider()
+    
+    # Penjelasan langkah-langkah
+    st.subheader("📖 Penjelasan Penyetaraan:")
+    st.markdown("""
+    Reaksi metatesis terjadi ketika ion-ion dari dua senyawa saling bertukar pasangan. Untuk memenuhi Hukum Kekekalan Massa, jumlah atom di reaktan (kiri) harus sama dengan di produk (kanan).
+    
+    **Langkah-langkahnya:**
+    1. **Cek Klorida (Cl):** Di sebelah kiri ada 2 atom Cl pada $BaCl_2$, tapi di kanan hanya ada 1 Cl pada $AgCl$. Tambahkan koefisien **2** di depan $AgCl$.
+    2. **Cek Perak (Ag):** Karena sekarang ada 2 atom Ag di kanan ($2AgCl$), kita harus menambahkan koefisien **2** di depan $AgNO_3$ di sebelah kiri.
+    3. **Cek Ion Nitrat ($NO_3$):** Di kiri sekarang ada 2 ion nitrat ($2AgNO_3$). Angka ini kebetulan sudah sama dengan jumlah nitrat di sebelah kanan pada $Ba(NO_3)_2$.
+    4. **Cek Barium (Ba):** Jumlah Ba sudah seimbang, yaitu 1 atom di kiri dan 1 atom di kanan.
+    """)
+
+st.divider()
+
+# Footer identitas
+st.caption("Dibuat oleh: Agung Nugraha (NIM 2560557)")
