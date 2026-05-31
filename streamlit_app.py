@@ -12,7 +12,6 @@ if 'halaman_utama' not in st.session_state:
 # --- 3. CUSTOM STYLING (CSS INTERAKTIF) ---
 st.markdown("""
 <style>
-/* Desain Halaman Cover */
 .cover-box {
     text-align: center;
     background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
@@ -58,8 +57,6 @@ st.markdown("""
     font-weight: 500;
     margin: 6px 0;
 }
-
-/* Desain Core App */
 .app-header {
     font-size: 32px;
     font-weight: 800;
@@ -71,11 +68,9 @@ st.markdown("""
 
 
 # ==============================================================================
-# SCREEN 1: HALAMAN COVER (AWAL)
+# SCREEN 1: HALAMAN COVER 
 # ==============================================================================
 if not st.session_state.halaman_utama:
-    
-    # Elemen Visual Cover (Semua baris HTML HARUS rata kiri penuh tanpa spasi awal)
     st.markdown("""
 <div class="cover-box">
 <div class="cover-title">🧪 REAKSI METATESIS</div>
@@ -101,7 +96,7 @@ if not st.session_state.halaman_utama:
 
 
 # ==============================================================================
-# SCREEN 2: HALAMAN INTI / CORE APPLICATION
+# SCREEN 2: HALAMAN INTI
 # ==============================================================================
 else:
     if st.button("⬅ Kembali ke Cover", type="secondary"):
@@ -132,7 +127,6 @@ else:
         'PO4': (-3, True), 'PO3': (-3, True), 'AsO4': (-3, True), 'N': (-3, False), 'P': (-3, False)
     }
 
-    # --- LOGIKA KIMIA ---
     def urai_senyawa(senyawa):
         kation_terdeteksi, anion_terdeteksi = None, None
         for k in sorted(kation_db.keys(), key=len, reverse=True):
@@ -140,8 +134,7 @@ else:
                 kation_terdeteksi = k
                 sisa_string = senyawa[len(k):]
                 break
-        if not kation_terdeteksi:
-            return None, None
+        if not kation_terdeteksi: return None, None
         for a in sorted(anion_db.keys(), key=len, reverse=True):
             if a in sisa_string:
                 anion_terdeteksi = a
@@ -154,13 +147,18 @@ else:
         kpk = (muatan_k * muatan_a) // math.gcd(muatan_k, muatan_a)
         indeks_k, indeks_a = kpk // muatan_k, kpk // muatan_a
         hasil_k = kation if indeks_k == 1 else f"{kation}{indeks_k}"
+        
         if indeks_a == 1:
             hasil_a = anion
         else:
             hasil_a = f"({anion}){indeks_a}" if is_poliatomik_a else f"{anion}{indeks_a}"
-        return f"{hasil_k}{hasil_a}"
+            
+        senyawa_baru = f"{hasil_k}{hasil_a}"
+        if senyawa_baru == "HOH": return "H2O"
+        return senyawa_baru
 
     def apakah_mengendap(kation, anion):
+        if kation == 'H' and anion in ['OH', 'O']: return False
         if kation in ['Na', 'K', 'NH4', 'Li', 'Rb', 'Cs']: return False
         if anion in ['NO3', 'CH3COO']: return False
         if anion in ['Cl', 'Br', 'I']: return True if kation in ['Ag', 'Pb', 'Hg'] else False
@@ -173,11 +171,17 @@ else:
         hasil = []
         for seny, koef in senyawa_dict.items():
             k, a = urai_senyawa(seny)
-            wujud = "(s)" if (k and a and apakah_mengendap(k, a)) else "(aq)"
-            if seny == "H2O": wujud = "(l)"
+            if seny == "H2O":
+                wujud = "(l)"
+            else:
+                wujud = "(s)" if (k and a and apakah_mengendap(k, a)) else "(aq)"
             prefix = "" if koef == 1 else f"{koef}"
             hasil.append(f"{prefix}{seny}{wujud}")
         return " + ".join(hasil)
+        
+    def fmt_muatan(nilai, tanda):
+        """Merapikan format muatan (contoh: 1+ menjadi +)"""
+        return tanda if nilai == 1 else f"{nilai}{tanda}"
 
     # --- MENU INPUT UTAMA ---
     st.subheader("📝 Menu Analisis Stoikiometri")
@@ -185,51 +189,80 @@ else:
     
     col1, col2 = st.columns(2)
     with col1:
-        reaktan1 = st.text_input("Reaktan 1", "AgNO3").strip()
+        reaktan1 = st.text_input("Reaktan 1", "NaOH").strip()
     with col2:
-        reaktan2 = st.text_input("Reaktan 2", "BaCl2").strip()
+        reaktan2 = st.text_input("Reaktan 2", "HCl").strip()
 
     if st.button("Analisis Reaksi", type="primary"):
         if reaktan1 == "H2O" or reaktan2 == "H2O":
-            st.warning("⚠️ **Analisis Teori:** Salah satu reaktan adalah air ($H_2O$). Proses ini memicu pelarutan fisik, bukan reaksi metatesis kimia.")
+            st.warning("⚠️ Salah satu reaktan adalah air ($H_2O$). Proses ini memicu pelarutan fisik, bukan reaksi metatesis kimia.")
         else:
             k1, a1 = urai_senyawa(reaktan1)
             k2, a2 = urai_senyawa(reaktan2)
             
             if not (k1 and a1 and k2 and a2):
-                st.error("❌ Senyawa tidak dikenali. Perhatikan kaidah penulisan huruf kapital (Contoh: NaCl).")
+                st.error("❌ Senyawa tidak dikenali. Perhatikan kaidah penulisan huruf kapital.")
             else:
                 produk1 = gabung_ion(k1, a2)
                 produk2 = gabung_ion(k2, a1)
-                mengendap_p1 = apakah_mengendap(k1, a2)
-                mengendap_p2 = apakah_mengendap(k2, a1)
+                
+                mengendap_p1 = apakah_mengendap(k1, a2) and produk1 != "H2O"
+                mengendap_p2 = apakah_mengendap(k2, a1) and produk2 != "H2O"
+                membentuk_air = (produk1 == "H2O" or produk2 == "H2O")
                 
                 try:
                     r_setara, p_setara = balance_stoichiometry({reaktan1, reaktan2}, {produk1, produk2})
                     kiri = format_reaksi_str(r_setara)
                     kanan = format_reaksi_str(p_setara)
                     
-                    if not mengendap_p1 and not mengendap_p2:
+                    if not mengendap_p1 and not mengendap_p2 and not membentuk_air:
                         st.error("❌ Secara Teori: TIDAK TERJADI REAKSI (No Reaction)")
                         st.latex(f"{reaktan1}(aq) + {reaktan2}(aq) \\rightarrow \\text{{Tidak Bereaksi}}")
-                        st.info(f"**Penjelasan Ilmiah:** Produk berpotensi menjadi {produk1} dan {produk2}, namun keduanya larut sempurna di air, sehingga tidak memicu reaksi kimia nyata.")
                     else:
                         st.success("✅ Secara Teori: REAKSI BERLANGSUNG (Valid)")
                         st.subheader("Persamaan Reaksi Setara:")
                         st.latex(f"{kiri} \\rightarrow {kanan}")
                         
-                        endapan = []
-                        if mengendap_p1: endapan.append(f"**{produk1}**")
-                        if mengendap_p2: endapan.append(f"**{produk2}**")
-                        st.markdown(f"**Driving Force:** Terbentuk fase padat/endapan {', '.join(endapan)} di dalam larutan.")
+                        alasan = []
+                        if mengendap_p1: alasan.append(f"fase padat/endapan **{produk1}**")
+                        if mengendap_p2: alasan.append(f"fase padat/endapan **{produk2}**")
+                        if membentuk_air: alasan.append(f"**molekul air ($H_2O$)** yang bersifat elektrolit lemah")
+                        
+                        st.markdown(f"**Driving Force:** Reaksi berlangsung karena terbentuk {', '.join(alasan)}.")
                     
                     st.divider()
-                    st.markdown("### 🔍 Lembar Kerja Analisis Ion")
-                    col_a, col_b = st.columns(2)
-                    with col_a:
-                        st.markdown(f"**Reaktan 1:**\n- ${k1}^{{{kation_db[k1][0]}+}}$\n- ${a1}^{{{anion_db[a1][0]}-}}$")
-                    with col_b:
-                        st.markdown(f"**Reaktan 2:**\n- ${k2}^{{{kation_db[k2][0]}+}}$\n- ${a2}^{{{anion_db[a2][0]}-}}$")
+                    
+                    # ------------------------------------------------------------------
+                    # PEMBARUAN VISUALISASI PERSILANGAN MUATAN (Sesuai Gambar User)
+                    # ------------------------------------------------------------------
+                    st.markdown("### 🔍 Lembar Kerja Analisis & Persilangan Ion")
+                    
+                    # 1. Format muatan untuk tampilan
+                    c_k1 = fmt_muatan(kation_db[k1][0], '+')
+                    c_a1 = fmt_muatan(abs(anion_db[a1][0]), '-')
+                    c_k2 = fmt_muatan(kation_db[k2][0], '+')
+                    c_a2 = fmt_muatan(abs(anion_db[a2][0]), '-')
+
+                    # 2. Pemecahan Reaktan (Penguraian Ion)
+                    col_uraian1, col_uraian2 = st.columns(2)
+                    with col_uraian1:
+                        st.markdown("**Penguraian Reaktan 1:**")
+                        st.latex(f"{reaktan1} \\longrightarrow {k1}^{{{c_k1}}} + {a1}^{{{c_a1}}}")
+                    with col_uraian2:
+                        st.markdown("**Penguraian Reaktan 2:**")
+                        st.latex(f"{reaktan2} \\longrightarrow {k2}^{{{c_k2}}} + {a2}^{{{c_a2}}}")
+
+                    # 3. Penjelasan Aturan Silang
+                    st.info("💡 **Aturan Silang Muatan:** Kation (positif) dari reaktan pertama akan bergabung dengan Anion (negatif) dari reaktan kedua, dan sebaliknya, membentuk senyawa baru menggunakan rumus:  $A^{x+} + B^{y-} \\rightarrow A_yB_x$")
+
+                    # 4. Pembentukan Produk (Persilangan)
+                    col_prod1, col_prod2 = st.columns(2)
+                    with col_prod1:
+                        st.markdown("**Silang 1 (Pembentukan Produk 1):**")
+                        st.latex(f"{k1}^{{{c_k1}}} + {a2}^{{{c_a2}}} \\longrightarrow {produk1}")
+                    with col_prod2:
+                        st.markdown("**Silang 2 (Pembentukan Produk 2):**")
+                        st.latex(f"{k2}^{{{c_k2}}} + {a1}^{{{c_a1}}} \\longrightarrow {produk2}")
 
                 except Exception as e:
                     st.error("❌ Reaksi tidak dapat disetarakan secara matematis stoikiometri.")
