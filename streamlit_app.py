@@ -68,11 +68,8 @@ html, body, [class*="css"] { font-family: var(--font-body) !important; color: va
 .portal-card:hover { border-color: var(--accent); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transform: translateY(-5px); }
 .portal-card h3 { color: var(--text); font-weight: 700; margin-top: 10px; }
 
-.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
 .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem; box-shadow: var(--shadow); }
 .page-title { font-family: var(--font-display) !important; font-size: 2rem !important; color: var(--text) !important; margin-bottom: 0.3rem !important; }
-.page-sub { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
-.app-header { font-size: 32px; font-weight: 800; color: var(--accent); margin-bottom: 5px; }
 
 .stButton > button {
     background: var(--surface) !important; border: 1px solid var(--border) !important;
@@ -171,55 +168,27 @@ def gabung_ion(kation, anion):
     return "H2O" if senyawa_baru == "HOH" else senyawa_baru
 
 def apakah_mengendap(kation, anion):
-    """
-    Aturan Kelarutan Universal Berdasarkan Tabel Analisis Anorganik Standar
-    """
-    # 1. Aturan Selalu Larut (Logam alkali, Amonium, dan Asam bebas)
     kation_larut = ['Li', 'Na', 'K', 'Rb', 'Cs', 'NH4', 'H']
-    # Nitrat, Asetat, Klorat, Perklorat, Permanganat umumnya larut sempurna
     anion_larut = ['NO3', 'CH3COO', 'ClO3', 'ClO4', 'MnO4', 'NO2', 'HCO3', 'HSO4']
-    
     if kation in kation_larut: return False
-    if anion in anion_larut: 
-        # Pengecualian langka: Perak Asetat sedikit mengendap di konsentrasi tinggi, tapi dianggap larut untuk dasar
-        return False
-
-    # 2. Aturan Halida & Tiosianat (Cl-, Br-, I-, SCN-)
+    if anion in anion_larut: return False
     if anion in ['Cl', 'Br', 'I', 'SCN']:
-        # Mengendap dengan Ag+, Pb2+, Hg2+, Cu+
         if kation in ['Ag', 'Pb', 'Hg', 'Cu']: return True
         return False
-
-    # 3. Aturan Fluorida (F-)
     if anion == 'F':
         if kation in ['Mg', 'Ca', 'Sr', 'Ba', 'Pb']: return True
         return False
-
-    # 4. Aturan Sulfat (SO4 2-)
     if anion == 'SO4':
-        # Mengendap dengan Ba2+, Sr2+, Ca2+, Pb2+, Ag+, Hg2+
         if kation in ['Ba', 'Sr', 'Ca', 'Pb', 'Ag', 'Hg']: return True
         return False
-
-    # 5. Aturan Hidroksida (OH-) & Oksida (O 2-)
     if anion in ['OH', 'O']:
-        # Larut HANYA dengan alkali dan Ba2+, Sr2+, Ca2+ (sedikit larut). Sisanya mengendap.
         if kation in ['Ba', 'Sr', 'Ca']: return False
         return True
-
-    # 6. Aturan Sulfida (S 2-)
     if anion == 'S':
-        # Larut dengan Alkali dan Alkali Tanah (Mg, Ca, Sr, Ba). Sisanya mengendap.
         if kation in ['Mg', 'Ca', 'Sr', 'Ba']: return False
         return True
-
-    # 7. Anion Poliatomik Kompleks yang Umumnya Mengendap
-    # Karbonat, Fosfat, Kromat, Oksalat, Sulfit, Silikat, Arsenat
     anion_endapan = ['CO3', 'PO4', 'PO3', 'CrO4', 'Cr2O7', 'C2O4', 'SO3', 'AsO4', 'SiO3', 'CN']
-    if anion in anion_endapan:
-        # Hampir semuanya mengendap, KECUALI jika kationnya golongan 1 atau NH4+ (sudah di-filter di Aturan #1)
-        return True
-
+    if anion in anion_endapan: return True
     return False
 
 def fmt_muatan(nilai, tanda):
@@ -272,11 +241,13 @@ elif st.session_state.app_mode == "organik":
     if st.session_state.halaman_org == "landing":
         st.button("🏠 Kembali ke Portal Utama", on_click=go_portal)
         st.markdown('<div class="landing-hero" style="padding-top:1rem;"><div class="hero-badge">⚗️ Kimia Organik</div><h1 class="hero-title">Sistem Identifikasi<br><span class="hero-accent">Senyawa Organik</span></h1></div>', unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             if st.button("🔬 Mulai Identifikasi", use_container_width=True, type="primary"): nav_org("identifikasi")
         with col2:
             if st.button("🗄️ Database Senyawa", use_container_width=True): nav_org("database")
+        with col3:
+            if st.button("📚 Dasar Teori", use_container_width=True): nav_org("teori")
 
     elif st.session_state.halaman_org == "identifikasi":
         if st.button("← Kembali ke Menu Organik"): nav_org("landing")
@@ -307,7 +278,6 @@ elif st.session_state.app_mode == "organik":
         
         if st.button("🔎 Eksekusi Identifikasi!", type="primary"):
             hasil = identifikasi_senyawa(jawaban)
-            
             st.markdown('<div class="result-box">', unsafe_allow_html=True)
             st.markdown("### 📋 Hasil Analisis Sistem")
             if hasil[0][0] == "Zat Tidak Dikenali":
@@ -327,6 +297,57 @@ elif st.session_state.app_mode == "organik":
         if st.button("← Kembali ke Menu Organik"): nav_org("landing")
         st.markdown('<h2 class="page-title">🗄️ Database Senyawa Organik</h2>', unsafe_allow_html=True)
         st.dataframe(pd.DataFrame(SENYAWA_DB), use_container_width=True, hide_index=True)
+
+    elif st.session_state.halaman_org == "teori":
+        if st.button("← Kembali ke Menu Organik"): nav_org("landing")
+        st.markdown('<h2 class="page-title">📚 Dasar Teori Analisis Organik</h2>', unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="feature-card">
+        <h3>Analisis Kualitatif Senyawa Organik</h3>
+        <p>Analisis kualitatif senyawa organik merupakan serangkaian prosedur pengujian laboratorium yang bertujuan untuk mengidentifikasi keberadaan gugus fungsi spesifik dalam suatu sampel tak dikenal. Berdasarkan algoritma pada sistem Chemisfun, identifikasi difokuskan pada penggolongan aldehida, keton, alkohol, fenol, karbohidrat, dan protein melalui pengamatan visual terhadap perubahan warna, pembentukan endapan, atau kekeruhan.</p>
+        
+        <h4>1. Identifikasi Gugus Karbonil (Aldehida dan Keton)</h4>
+        Senyawa aldehida dan keton memiliki kesamaan struktural berupa ikatan rangkap karbon-oksigen (gugus karbonil). Untuk membedakan dan mengidentifikasi keduanya, serangkaian uji spesifik dilakukan:
+        <ul>
+            <li><b>Uji 2,4-Dinitrofenilhidrazin (2,4-DNPH):</b> Reagen ini berfungsi sebagai uji penapisan awal untuk semua gugus karbonil. Reaksi kondensasi antara sampel dengan reagen Brady (2,4-DNPH) yang menghasilkan endapan berwarna kuning hingga jingga kemerahan mengonfirmasi keberadaan aldehida atau keton.</li>
+            <li><b>Uji Tollens (Cermin Perak):</b> Digunakan untuk membedakan aldehida dari keton. Aldehida dapat dioksidasi oleh ion perak amoniakal $[Ag(NH_3)_2]^+$, sehingga mereduksi ion $Ag^+$ menjadi logam perak murni yang menempel pada dinding tabung reaksi membentuk "cermin perak". Keton tidak memberikan hasil positif pada uji ini.</li>
+            <li><b>Uji Fehling:</b> Memiliki prinsip kerja yang serupa dengan uji Tollens. Aldehida mereduksi ion tembaga(II) kompleks menjadi tembaga(I) oksida ($Cu_2O$), yang menghasilkan endapan berwarna merah bata.</li>
+            <li><b>Uji Iodoform:</b> Uji spesifik ini digunakan untuk mendeteksi keberadaan gugus metil keton (senyawa karbonil yang memiliki gugus metil yang terikat langsung pada karbon karbonil). Reaksi positif ditandai dengan terbentuknya endapan kuning iodoform ($CHI_3$).</li>
+        </ul>
+
+        <h4>2. Identifikasi Golongan Alkohol</h4>
+        Alkohol diklasifikasikan menjadi primer, sekunder, dan tersier berdasarkan letak terikatnya gugus hidroksil (-OH).
+        <ul>
+            <li><b>Uji Lucas:</b> Reagen Lucas terdiri dari asam klorida (HCl) pekat dan seng klorida ($ZnCl_2$) anhidrat. Uji ini didasarkan pada kecepatan reaksi substitusi nukleofilik ($S_N1$) pembentukan alkil klorida yang tidak larut. 
+                <ul>
+                    <li><b>Alkohol tersier</b> bereaksi sangat cepat, menghasilkan kekeruhan atau pemisahan fase seketika.</li>
+                    <li><b>Alkohol sekunder</b> bereaksi lebih lambat, umumnya membutuhkan waktu 5-10 menit dan pemanasan ringan untuk membentuk kekeruhan.</li>
+                    <li><b>Alkohol primer</b> tidak bereaksi (tetap bening) pada suhu ruang.</li>
+                </ul>
+            </li>
+            <li><b>Uji Iodoform untuk Alkohol:</b> Selain untuk metil keton, uji iodoform juga akan bernilai positif pada alkohol sekunder yang memiliki struktur metil karbinol (struktur di mana gugus -OH terikat pada karbon yang juga mengikat gugus metil).</li>
+        </ul>
+
+        <h4>3. Identifikasi Golongan Fenol</h4>
+        Fenol merupakan senyawa organik di mana gugus hidroksil terikat langsung pada cincin aromatik.
+        <ul>
+            <li><b>Uji Besi(III) Klorida ($FeCl_3$):</b> Penambahan larutan $FeCl_3$ ke dalam sampel yang mengandung gugus fenolik bebas akan menghasilkan pembentukan kompleks besi-fenol yang sangat berwarna (umumnya ungu, hijau, atau biru pekat, bergantung pada struktur spesifik fenolnya).</li>
+        </ul>
+
+        <h4>4. Identifikasi Karbohidrat</h4>
+        Karbohidrat merupakan polihidroksi aldehida atau keton. Pengujian pada kelompok ini mencakup uji umum dan uji spesifik gula pereduksi:
+        <ul>
+            <li><b>Uji Molisch:</b> Merupakan uji umum untuk semua jenis karbohidrat. Reaksi dehidrasi karbohidrat oleh asam sulfat pekat menghasilkan senyawa furfural atau derivatnya, yang kemudian berkondensasi dengan $\\alpha$-naftol membentuk cincin berwarna ungu di bidang batas larutan.</li>
+            <li><b>Uji Gula Pereduksi:</b> Karbohidrat yang memiliki gugus aldehida bebas (atau keton yang dapat berisomerisasi) akan memberikan hasil positif (endapan merah bata) pada Uji Fehling maupun Uji Tollens, membedakannya dari karbohidrat non-pereduksi seperti sukrosa atau polisakarida kompleks.</li>
+        </ul>
+
+        <h4>5. Identifikasi Protein dan Peptida</h4>
+        <ul>
+            <li><b>Uji Biuret:</b> Reagen Biuret yang mengandung ion $Cu^{2+}$ dalam suasana basa digunakan untuk mengidentifikasi keberadaan ikatan peptida (ikatan amida) pada makromolekul protein. Reaksi pembentukan kompleks koordinasi antara ion tembaga dengan pasangan elektron bebas dari nitrogen amida akan menghasilkan perubahan warna larutan menjadi ungu violet.</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════════════════════════════════════
 #  C. MODUL: REAKSI METATESIS
