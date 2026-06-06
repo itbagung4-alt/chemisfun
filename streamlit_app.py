@@ -295,8 +295,40 @@ elif st.session_state.app_mode == "organik":
 
     elif st.session_state.halaman_org == "database":
         if st.button("← Kembali ke Menu Organik"): nav_org("landing")
-        st.markdown('<h2 class="page-title">🗄️ Database Senyawa Organik</h2>', unsafe_allow_html=True)
-        st.dataframe(pd.DataFrame(SENYAWA_DB), use_container_width=True, hide_index=True)
+        
+        # Banner Header Hiasan
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #e0f2fe, #bae6fd); padding: 1.5rem; border-radius: 12px; border-left: 5px solid #0284c7; margin-bottom: 2rem; box-shadow: var(--shadow);">
+            <h2 style="margin:0; color:#0f172a; font-family: var(--font-display);">🗄️ Pustaka Referensi Organik</h2>
+            <p style="margin:5px 0 0 0; color:#475569; font-size:0.95rem;">
+                Kumpulan data karakteristik dan reagen uji spesifik untuk identifikasi golongan senyawa organik.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Kartu Statistik
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown('<div class="feature-card" style="text-align:center; padding: 1rem;"><h3>🧪 7</h3><p style="margin:0; font-size:0.85rem; color:var(--text-muted);">Golongan Senyawa</p></div>', unsafe_allow_html=True)
+        with col2:
+            st.markdown('<div class="feature-card" style="text-align:center; padding: 1rem;"><h3>🔍 6+</h3><p style="margin:0; font-size:0.85rem; color:var(--text-muted);">Reagen Uji Spesifik</p></div>', unsafe_allow_html=True)
+        with col3:
+            st.markdown('<div class="feature-card" style="text-align:center; padding: 1rem;"><h3>📊 100%</h3><p style="margin:0; font-size:0.85rem; color:var(--text-muted);">Akurasi Literatur</p></div>', unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # Tabel Database Utama
+        st.markdown("#### 📑 Tabel Karakteristik Senyawa")
+        st.dataframe(
+            pd.DataFrame(SENYAWA_DB), 
+            use_container_width=True, 
+            hide_index=True
+        )
+        
+        # Kotak Tips Tambahan
+        st.markdown("<br>", unsafe_allow_html=True)
+        with st.expander("💡 Tips Praktikum Laboratorium"):
+            st.info("**Pencegahan Kontaminasi Silang:** Pastikan tabung reaksi dalam keadaan benar-benar bersih dan kering sebelum melakukan uji spesifik. Residu dari uji sebelumnya (terutama pada Uji Tollens dan Lucas) dapat mengganggu hasil reaksi visual yang diharapkan.")
 
     elif st.session_state.halaman_org == "teori":
         if st.button("← Kembali ke Menu Organik"): nav_org("landing")
@@ -311,15 +343,15 @@ elif st.session_state.app_mode == "organik":
         Senyawa aldehida dan keton memiliki kesamaan struktural berupa ikatan rangkap karbon-oksigen (gugus karbonil). Untuk membedakan dan mengidentifikasi keduanya, serangkaian uji spesifik dilakukan:
         <ul>
             <li><b>Uji 2,4-Dinitrofenilhidrazin (2,4-DNPH):</b> Reagen ini berfungsi sebagai uji penapisan awal untuk semua gugus karbonil. Reaksi kondensasi antara sampel dengan reagen Brady (2,4-DNPH) yang menghasilkan endapan berwarna kuning hingga jingga kemerahan mengonfirmasi keberadaan aldehida atau keton.</li>
-            <li><b>Uji Tollens (Cermin Perak):</b> Digunakan untuk membedakan aldehida dari keton. Aldehida dapat dioksidasi oleh ion perak amoniakal $[Ag(NH_3)_2]^+$, sehingga mereduksi ion $Ag^+$ menjadi logam perak murni yang menempel pada dinding tabung reaksi membentuk "cermin perak". Keton tidak memberikan hasil positif pada uji ini.</li>
-            <li><b>Uji Fehling:</b> Memiliki prinsip kerja yang serupa dengan uji Tollens. Aldehida mereduksi ion tembaga(II) kompleks menjadi tembaga(I) oksida ($Cu_2O$), yang menghasilkan endapan berwarna merah bata.</li>
-            <li><b>Uji Iodoform:</b> Uji spesifik ini digunakan untuk mendeteksi keberadaan gugus metil keton (senyawa karbonil yang memiliki gugus metil yang terikat langsung pada karbon karbonil). Reaksi positif ditandai dengan terbentuknya endapan kuning iodoform ($CHI_3$).</li>
+            <li><b>Uji Tollens (Cermin Perak):</b> Digunakan untuk membedakan aldehida dari keton. Aldehida dapat dioksidasi oleh ion perak amoniakal [Ag(NH<sub>3</sub>)<sub>2</sub>]<sup>+</sup>, sehingga mereduksi ion Ag<sup>+</sup> menjadi logam perak murni yang menempel pada dinding tabung reaksi membentuk "cermin perak". Keton tidak memberikan hasil positif pada uji ini.</li>
+            <li><b>Uji Fehling:</b> Memiliki prinsip kerja yang serupa dengan uji Tollens. Aldehida mereduksi ion tembaga(II) kompleks menjadi tembaga(I) oksida (Cu<sub>2</sub>O), yang menghasilkan endapan berwarna merah bata.</li>
+            <li><b>Uji Iodoform:</b> Uji spesifik ini digunakan untuk mendeteksi keberadaan gugus metil keton (senyawa karbonil yang memiliki gugus metil yang terikat langsung pada karbon karbonil). Reaksi positif ditandai dengan terbentuknya endapan kuning iodoform (CHI<sub>3</sub>).</li>
         </ul>
 
         <h4>2. Identifikasi Golongan Alkohol</h4>
         Alkohol diklasifikasikan menjadi primer, sekunder, dan tersier berdasarkan letak terikatnya gugus hidroksil (-OH).
         <ul>
-            <li><b>Uji Lucas:</b> Reagen Lucas terdiri dari asam klorida (HCl) pekat dan seng klorida ($ZnCl_2$) anhidrat. Uji ini didasarkan pada kecepatan reaksi substitusi nukleofilik ($S_N1$) pembentukan alkil klorida yang tidak larut. 
+            <li><b>Uji Lucas:</b> Reagen Lucas terdiri dari asam klorida (HCl) pekat dan seng klorida (ZnCl<sub>2</sub>) anhidrat. Uji ini didasarkan pada kecepatan reaksi substitusi nukleofilik (S<sub>N</sub>1) pembentukan alkil klorida yang tidak larut. 
                 <ul>
                     <li><b>Alkohol tersier</b> bereaksi sangat cepat, menghasilkan kekeruhan atau pemisahan fase seketika.</li>
                     <li><b>Alkohol sekunder</b> bereaksi lebih lambat, umumnya membutuhkan waktu 5-10 menit dan pemanasan ringan untuk membentuk kekeruhan.</li>
@@ -332,19 +364,19 @@ elif st.session_state.app_mode == "organik":
         <h4>3. Identifikasi Golongan Fenol</h4>
         Fenol merupakan senyawa organik di mana gugus hidroksil terikat langsung pada cincin aromatik.
         <ul>
-            <li><b>Uji Besi(III) Klorida ($FeCl_3$):</b> Penambahan larutan $FeCl_3$ ke dalam sampel yang mengandung gugus fenolik bebas akan menghasilkan pembentukan kompleks besi-fenol yang sangat berwarna (umumnya ungu, hijau, atau biru pekat, bergantung pada struktur spesifik fenolnya).</li>
+            <li><b>Uji Besi(III) Klorida (FeCl<sub>3</sub>):</b> Penambahan larutan FeCl<sub>3</sub> ke dalam sampel yang mengandung gugus fenolik bebas akan menghasilkan pembentukan kompleks besi-fenol yang sangat berwarna (umumnya ungu, hijau, atau biru pekat, bergantung pada struktur spesifik fenolnya).</li>
         </ul>
 
         <h4>4. Identifikasi Karbohidrat</h4>
         Karbohidrat merupakan polihidroksi aldehida atau keton. Pengujian pada kelompok ini mencakup uji umum dan uji spesifik gula pereduksi:
         <ul>
-            <li><b>Uji Molisch:</b> Merupakan uji umum untuk semua jenis karbohidrat. Reaksi dehidrasi karbohidrat oleh asam sulfat pekat menghasilkan senyawa furfural atau derivatnya, yang kemudian berkondensasi dengan $\\alpha$-naftol membentuk cincin berwarna ungu di bidang batas larutan.</li>
+            <li><b>Uji Molisch:</b> Merupakan uji umum untuk semua jenis karbohidrat. Reaksi dehidrasi karbohidrat oleh asam sulfat pekat menghasilkan senyawa furfural atau derivatnya, yang kemudian berkondensasi dengan &alpha;-naftol membentuk cincin berwarna ungu di bidang batas larutan.</li>
             <li><b>Uji Gula Pereduksi:</b> Karbohidrat yang memiliki gugus aldehida bebas (atau keton yang dapat berisomerisasi) akan memberikan hasil positif (endapan merah bata) pada Uji Fehling maupun Uji Tollens, membedakannya dari karbohidrat non-pereduksi seperti sukrosa atau polisakarida kompleks.</li>
         </ul>
 
         <h4>5. Identifikasi Protein dan Peptida</h4>
         <ul>
-            <li><b>Uji Biuret:</b> Reagen Biuret yang mengandung ion $Cu^{2+}$ dalam suasana basa digunakan untuk mengidentifikasi keberadaan ikatan peptida (ikatan amida) pada makromolekul protein. Reaksi pembentukan kompleks koordinasi antara ion tembaga dengan pasangan elektron bebas dari nitrogen amida akan menghasilkan perubahan warna larutan menjadi ungu violet.</li>
+            <li><b>Uji Biuret:</b> Reagen Biuret yang mengandung ion Cu<sup>2+</sup> dalam suasana basa digunakan untuk mengidentifikasi keberadaan ikatan peptida (ikatan amida) pada makromolekul protein. Reaksi pembentukan kompleks koordinasi antara ion tembaga dengan pasangan elektron bebas dari nitrogen amida akan menghasilkan perubahan warna larutan menjadi ungu violet.</li>
         </ul>
         </div>
         """, unsafe_allow_html=True)
