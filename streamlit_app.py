@@ -15,15 +15,15 @@ st.set_page_config(
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap');
 :root {
-    --bg: #f8fafc;         /* Slate 50 - Latar belakang utama */
-    --surface: #ffffff;    /* Putih murni untuk kartu */
-    --surface2: #f1f5f9;   /* Slate 100 - Latar belakang sekunder/input */
-    --border: #cbd5e1;     /* Slate 300 - Garis batas */
-    --accent: #0284c7;     /* Light Blue 600 */
-    --accent2: #6366f1;    /* Indigo 500 */
-    --accent3: #059669;    /* Emerald 600 */
-    --text: #0f172a;       /* Slate 900 - Teks utama gelap */
-    --text-muted: #475569; /* Slate 600 - Teks pendukung */
+    --bg: #f8fafc;         
+    --surface: #ffffff;    
+    --surface2: #f1f5f9;   
+    --border: #cbd5e1;     
+    --accent: #0284c7;     
+    --accent2: #6366f1;    
+    --accent3: #059669;    
+    --text: #0f172a;       
+    --text-muted: #475569; 
     --font-body: 'DM Sans', sans-serif; 
     --font-mono: 'Space Mono', monospace;
     --font-display: 'Playfair Display', serif; 
@@ -35,7 +35,6 @@ html, body, [class*="css"] { font-family: var(--font-body) !important; color: va
 #MainMenu, footer, header { visibility: hidden; }
 .stDeployButton { display: none; }
 
-/* ─── Komponen Portal & Tim ─── */
 .landing-hero { text-align: center; padding: 2rem 2rem 1rem; }
 .hero-badge {
     display: inline-block; font-family: var(--font-mono); font-size: 0.75rem;
@@ -54,7 +53,6 @@ html, body, [class*="css"] { font-family: var(--font-body) !important; color: va
 }
 .hero-desc { font-size: 1.05rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6; }
 
-/* Kartu Tim Pengembang di Depan */
 .team-banner {
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
     padding: 1.5rem; text-align: center; margin: 1.5rem auto 3rem; max-width: 900px;
@@ -70,14 +68,12 @@ html, body, [class*="css"] { font-family: var(--font-body) !important; color: va
 .portal-card:hover { border-color: var(--accent); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transform: translateY(-5px); }
 .portal-card h3 { color: var(--text); font-weight: 700; margin-top: 10px; }
 
-/* ─── Komponen Spesifik ─── */
 .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
 .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem; box-shadow: var(--shadow); }
 .page-title { font-family: var(--font-display) !important; font-size: 2rem !important; color: var(--text) !important; margin-bottom: 0.3rem !important; }
 .page-sub { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
 .app-header { font-size: 32px; font-weight: 800; color: var(--accent); margin-bottom: 5px; }
 
-/* ─── General Streamlit Override ─── */
 .stButton > button {
     background: var(--surface) !important; border: 1px solid var(--border) !important;
     color: var(--text) !important; border-radius: 8px !important;
@@ -88,19 +84,12 @@ html, body, [class*="css"] { font-family: var(--font-body) !important; color: va
 .stButton > button[kind="primary"]:hover { opacity: 0.9 !important; color: white !important; }
 
 .stTextInput > div > div > input, .stSelectbox > div > div { background: var(--surface) !important; border: 1px solid var(--border) !important; color: var(--text) !important; }
-.streamlit-expanderHeader { background: var(--surface2) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; color: var(--text) !important; font-weight: 600 !important; }
-.streamlit-expanderContent { background: var(--surface) !important; border: 1px solid var(--border) !important; border-top: none !important; }
-hr { border-color: var(--border) !important; }
-code, pre { background: var(--surface2) !important; border: 1px solid var(--border) !important; color: var(--accent2) !important; border-radius: 6px !important; }
-.stAlert { background: var(--surface) !important; border: 1px solid var(--border) !important; color: var(--text) !important; }
-
 .result-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-top: 1.5rem; }
 .result-item { background: var(--surface); border-radius: 8px; padding: 1rem; margin-bottom: 0.8rem; border-left: 4px solid var(--accent3); box-shadow: var(--shadow); }
 .result-golongan { font-family: var(--font-mono); font-weight: 700; color: var(--accent3); font-size: 1.1rem; }
-.tag { display: inline-block; background: #e0f2fe; border: 1px solid #bae6fd; color: #0369a1; font-size: 0.78rem; padding: 0.25rem 0.7rem; border-radius: 999px; margin: 0.2rem; }
 </style>""", unsafe_allow_html=True)
 
-# ─── 3. DATABASE ORGANIK YANG DIPERLUAS ─────────────────────────────────────
+# ─── 3. DATABASE ORGANIK ────────────────────────────────────────────────────
 SENYAWA_DB = [
     {"Nama Golongan": "Alkohol Primer/Sekunder", "Uji Spesifik": "Iodoform (jika metil karbinol), Uji Lucas"},
     {"Nama Golongan": "Alkohol Tersier", "Uji Spesifik": "Uji Lucas (langsung keruh)"},
@@ -113,17 +102,13 @@ SENYAWA_DB = [
 
 def identifikasi_senyawa(jawaban: dict) -> list:
     kandidat = []
-    
-    # Logika Karbonil (Aldehida & Keton)
     if jawaban.get("dnph") == "Ya":
         if jawaban.get("tollens") == "Ya" or jawaban.get("fehling") == "Ya":
-            kandidat.append(("Aldehida", "2,4-DNPH ✅ (Gugus Karbonil) + Tollens/Fehling ✅"))
+            kandidat.append(("Aldehida", "2,4-DNPH ✅ + Tollens/Fehling ✅"))
         else:
-            kandidat.append(("Keton", "2,4-DNPH ✅ (Gugus Karbonil) + Tollens/Fehling ❌"))
+            kandidat.append(("Keton", "2,4-DNPH ✅ + Tollens/Fehling ❌"))
             if jawaban.get("iodoform") == "Ya":
-                kandidat.append(("Metil Keton", "Iodoform ✅ (Spesifik Metil Keton)"))
-                
-    # Logika Alkohol (Uji Lucas & Iodoform)
+                kandidat.append(("Metil Keton", "Iodoform ✅"))
     if jawaban.get("lucas") != "Tidak ada perubahan (Bening)":
         if jawaban.get("lucas") == "Keruh seketika":
             kandidat.append(("Alkohol Tersier", "Uji Lucas ✅ (Seketika bereaksi)"))
@@ -131,25 +116,17 @@ def identifikasi_senyawa(jawaban: dict) -> list:
             kandidat.append(("Alkohol Sekunder", "Uji Lucas ✅ (Reaksi lambat)"))
             if jawaban.get("iodoform") == "Ya":
                 kandidat.append(("Alkohol Sekunder (Metil Karbinol)", "Iodoform ✅"))
-
-    # Logika Spesifik Lainnya
-    if jawaban.get("fecl3") == "Ya": 
-        kandidat.append(("Fenol / Golongan Fenolik", "FeCl₃ ✅ (Warna Ungu/Hijau terdeteksi)"))
-        
-    if jawaban.get("biuret") == "Ya": 
-        kandidat.append(("Protein / Ikatan Peptida", "Biuret ✅ (Kompleks ungu terbentuk)"))
-        
+    if jawaban.get("fecl3") == "Ya": kandidat.append(("Fenol / Golongan Fenolik", "FeCl₃ ✅"))
+    if jawaban.get("biuret") == "Ya": kandidat.append(("Protein / Ikatan Peptida", "Biuret ✅"))
     if jawaban.get("molisch") == "Ya": 
-        kandidat.append(("Karbohidrat", "Molisch ✅ (Cincin ungu terbentuk)"))
+        kandidat.append(("Karbohidrat", "Molisch ✅"))
         if jawaban.get("fehling") == "Ya":
-            kandidat.append(("Karbohidrat (Gula Pereduksi)", "Fehling ✅ (Endapan merah bata)"))
-
+            kandidat.append(("Karbohidrat (Gula Pereduksi)", "Fehling ✅"))
     if not kandidat: 
-        kandidat.append(("Zat Tidak Dikenali", "Kombinasi hasil uji tidak spesifik atau saling bertentangan dengan database utama."))
-        
+        kandidat.append(("Zat Tidak Dikenali", "Kombinasi hasil uji tidak spesifik."))
     return kandidat
 
-# ─── 4. DATABASE & FUNGSI METATESIS ─────────────────────────────────────────
+# ─── 4. DATABASE & FUNGSI METATESIS KOMPREHENSIF ────────────────────────────
 kation_db = {
     'H': (1, False), 'Li': (1, False), 'Na': (1, False), 'K': (1, False), 'Rb': (1, False), 'Cs': (1, False),
     'Be': (2, False), 'Mg': (2, False), 'Ca': (2, False), 'Sr': (2, False), 'Ba': (2, False),
@@ -165,7 +142,7 @@ anion_db = {
     'MnO4': (-1, True), 'HCO3': (-1, True), 'HSO4': (-1, True), 'H2PO4': (-1, True),
     'O': (-2, False), 'S': (-2, False),
     'SO4': (-2, True), 'SO3': (-2, True), 'CO3': (-2, True), 'CrO4': (-2, True), 'Cr2O7': (-2, True), 
-    'C2O4': (-2, True), 'S2O3': (-2, True), 'HPO4': (-2, True),
+    'C2O4': (-2, True), 'S2O3': (-2, True), 'HPO4': (-2, True), 'SiO3': (-2, True),
     'PO4': (-3, True), 'PO3': (-3, True), 'AsO4': (-3, True), 'N': (-3, False), 'P': (-3, False)
 }
 
@@ -194,13 +171,55 @@ def gabung_ion(kation, anion):
     return "H2O" if senyawa_baru == "HOH" else senyawa_baru
 
 def apakah_mengendap(kation, anion):
-    if kation == 'H' and anion in ['OH', 'O']: return False
-    if kation in ['Na', 'K', 'NH4', 'Li', 'Rb', 'Cs']: return False
-    if anion in ['NO3', 'CH3COO']: return False
-    if anion in ['Cl', 'Br', 'I']: return True if kation in ['Ag', 'Pb', 'Hg'] else False
-    if anion == 'SO4': return True if kation in ['Ba', 'Ca', 'Sr', 'Pb'] else False
-    if anion == 'OH': return False if kation in ['Ca', 'Sr', 'Ba'] else True
-    if anion in ['CO3', 'PO4', 'CrO4', 'S', 'O']: return True
+    """
+    Aturan Kelarutan Universal Berdasarkan Tabel Analisis Anorganik Standar
+    """
+    # 1. Aturan Selalu Larut (Logam alkali, Amonium, dan Asam bebas)
+    kation_larut = ['Li', 'Na', 'K', 'Rb', 'Cs', 'NH4', 'H']
+    # Nitrat, Asetat, Klorat, Perklorat, Permanganat umumnya larut sempurna
+    anion_larut = ['NO3', 'CH3COO', 'ClO3', 'ClO4', 'MnO4', 'NO2', 'HCO3', 'HSO4']
+    
+    if kation in kation_larut: return False
+    if anion in anion_larut: 
+        # Pengecualian langka: Perak Asetat sedikit mengendap di konsentrasi tinggi, tapi dianggap larut untuk dasar
+        return False
+
+    # 2. Aturan Halida & Tiosianat (Cl-, Br-, I-, SCN-)
+    if anion in ['Cl', 'Br', 'I', 'SCN']:
+        # Mengendap dengan Ag+, Pb2+, Hg2+, Cu+
+        if kation in ['Ag', 'Pb', 'Hg', 'Cu']: return True
+        return False
+
+    # 3. Aturan Fluorida (F-)
+    if anion == 'F':
+        if kation in ['Mg', 'Ca', 'Sr', 'Ba', 'Pb']: return True
+        return False
+
+    # 4. Aturan Sulfat (SO4 2-)
+    if anion == 'SO4':
+        # Mengendap dengan Ba2+, Sr2+, Ca2+, Pb2+, Ag+, Hg2+
+        if kation in ['Ba', 'Sr', 'Ca', 'Pb', 'Ag', 'Hg']: return True
+        return False
+
+    # 5. Aturan Hidroksida (OH-) & Oksida (O 2-)
+    if anion in ['OH', 'O']:
+        # Larut HANYA dengan alkali dan Ba2+, Sr2+, Ca2+ (sedikit larut). Sisanya mengendap.
+        if kation in ['Ba', 'Sr', 'Ca']: return False
+        return True
+
+    # 6. Aturan Sulfida (S 2-)
+    if anion == 'S':
+        # Larut dengan Alkali dan Alkali Tanah (Mg, Ca, Sr, Ba). Sisanya mengendap.
+        if kation in ['Mg', 'Ca', 'Sr', 'Ba']: return False
+        return True
+
+    # 7. Anion Poliatomik Kompleks yang Umumnya Mengendap
+    # Karbonat, Fosfat, Kromat, Oksalat, Sulfit, Silikat, Arsenat
+    anion_endapan = ['CO3', 'PO4', 'PO3', 'CrO4', 'Cr2O7', 'C2O4', 'SO3', 'AsO4', 'SiO3', 'CN']
+    if anion in anion_endapan:
+        # Hampir semuanya mengendap, KECUALI jika kationnya golongan 1 atau NH4+ (sudah di-filter di Aturan #1)
+        return True
+
     return False
 
 def fmt_muatan(nilai, tanda):
@@ -289,10 +308,8 @@ elif st.session_state.app_mode == "organik":
         if st.button("🔎 Eksekusi Identifikasi!", type="primary"):
             hasil = identifikasi_senyawa(jawaban)
             
-            # Output menggunakan komponen visual CSS
             st.markdown('<div class="result-box">', unsafe_allow_html=True)
             st.markdown("### 📋 Hasil Analisis Sistem")
-            
             if hasil[0][0] == "Zat Tidak Dikenali":
                 st.warning("⚠️ " + hasil[0][1] + " Coba periksa kembali parameter hasil pengamatan laboratorium Anda.")
             else:
@@ -312,7 +329,7 @@ elif st.session_state.app_mode == "organik":
         st.dataframe(pd.DataFrame(SENYAWA_DB), use_container_width=True, hide_index=True)
 
 # ════════════════════════════════════════════════════════════════════════════════
-#  C. MODUL: REAKSI METATESIS (DENGAN 3 REAKTAN)
+#  C. MODUL: REAKSI METATESIS
 # ════════════════════════════════════════════════════════════════════════════════
 elif st.session_state.app_mode == "metatesis":
     st.button("🏠 Kembali ke Portal Utama", on_click=go_portal)
