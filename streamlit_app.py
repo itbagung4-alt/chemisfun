@@ -392,8 +392,10 @@ elif st.session_state.app_mode == "metatesis":
 
     st.markdown("#### 📥 Masukkan Senyawa Reaktan (Maksimal 3)")
     col1, col2, col3 = st.columns(3)
+    
+    # PERBAIKAN: Default Reaktan 2 sekarang dikosongkan agar lebih mudah menguji 1 reaktan
     with col1: reaktan1 = st.text_input("Reaktan 1", "NaOH").strip().replace(" ", "")
-    with col2: reaktan2 = st.text_input("Reaktan 2", "HCl").strip().replace(" ", "")
+    with col2: reaktan2 = st.text_input("Reaktan 2", "").strip().replace(" ", "")
     with col3: reaktan3 = st.text_input("Reaktan 3 (Opsional)", "").strip().replace(" ", "")
 
     if st.button("Analisis Reaksi", type="primary"):
@@ -504,4 +506,4 @@ elif st.session_state.app_mode == "metatesis":
                                     
                     except Exception as e:
                         st.error("❌ Reaksi silang tidak dapat disetarakan secara matematis. Kombinasi ion antar reaktan mungkin tidak menghasilkan set produk yang valid secara persamaan kimia.")
-            
+                    
