@@ -399,80 +399,109 @@ elif st.session_state.app_mode == "metatesis":
     if st.button("Analisis Reaksi", type="primary"):
         input_raw = [r for r in [reaktan1, reaktan2, reaktan3] if r]
         
-        if len(input_raw) < 2:
-            st.warning("⚠️ Minimal masukkan 2 reaktan untuk melakukan reaksi silang.")
-        elif "H2O" in input_raw:
-            st.warning("⚠️ Reaktan H₂O memicu pelarutan fisik, bukan metatesis murni.")
-        else:
-            parsed_reactants = [urai_senyawa(r) for r in input_raw]
+        if len(input_raw) == 0:
+            st.warning("⚠️ Masukkan minimal 1 senyawa reaktan untuk dianalisis.")
             
-            if not all(k and a for k, a in parsed_reactants):
-                st.error("❌ Salah satu senyawa tidak dikenali. Pastikan kaidah penulisan huruf kapital sudah benar.")
+        elif len(input_raw) == 1:
+            senyawa = input_raw[0]
+            k, a = urai_senyawa(senyawa)
+            
+            if not k or not a:
+                st.error("❌ Senyawa tidak dikenali. Pastikan kaidah penulisan huruf kapital dan simbol unsur sudah benar.")
             else:
-                kations = [p[0] for p in parsed_reactants]
-                anions = [p[1] for p in parsed_reactants]
+                muatan_k = abs(kation_db[k][0])
+                muatan_a = abs(anion_db[a][0])
+                kpk = (muatan_k * muatan_a) // math.gcd(muatan_k, muatan_a)
+                koef_k = kpk // muatan_k
+                koef_a = kpk // muatan_a
                 
-                produk_kemungkinan = set()
-                for i, k in enumerate(kations):
-                    for j, a in enumerate(anions):
-                        if i != j:  
-                            produk_kemungkinan.add(gabung_ion(k, a))
+                str_koef_k = f"{koef_k}" if koef_k > 1 else ""
+                str_koef_a = f"{koef_a}" if koef_a > 1 else ""
                 
-                try:
-                    r_setara, p_setara = balance_stoichiometry(set(input_raw), produk_kemungkinan)
+                c_k = fmt_muatan(muatan_k, '+')
+                c_a = fmt_muatan(muatan_a, '-')
+                
+                st.success("✅ Reaksi Ionisasi (Penguraian Senyawa Tunggal)")
+                st.markdown("### Persamaan Reaksi Setara:")
+                st.latex(f"{senyawa} \\longrightarrow {str_koef_k}{k}^{{{c_k}}} + {str_koef_a}{a}^{{{c_a}}}")
+                
+                st.divider()
+                st.info(f"💡 **Informasi Disosiasi:** Senyawa tunggal **{senyawa}** akan terurai menjadi kation positif dan anion negatif penyusunnya jika dilarutkan dalam pelarut polar (seperti air). Muatan dan koefisien telah disetarakan secara otomatis berdasarkan prinsip kekekalan muatan.")
+                
+        else:
+            if "H2O" in input_raw:
+                st.warning("⚠️ Reaktan H₂O memicu pelarutan fisik, bukan reaksi metatesis murni. Gunakan 1 kolom input saja jika ingin melihat penguraian dalam air.")
+            else:
+                parsed_reactants = [urai_senyawa(r) for r in input_raw]
+                
+                if not all(k and a for k, a in parsed_reactants):
+                    st.error("❌ Salah satu senyawa tidak dikenali. Pastikan kaidah penulisan huruf kapital sudah benar.")
+                else:
+                    kations = [p[0] for p in parsed_reactants]
+                    anions = [p[1] for p in parsed_reactants]
                     
-                    def format_dict(senyawa_dict):
-                        hasil = []
-                        for seny, koef in senyawa_dict.items():
-                            k, a = urai_senyawa(seny)
-                            wujud = "(l)" if seny == "H2O" else ("(s)" if (k and a and apakah_mengendap(k, a)) else "(aq)")
-                            prefix = "" if koef == 1 else f"{koef}"
-                            hasil.append(f"{prefix}{seny}{wujud}")
-                        return " + ".join(hasil)
+                    produk_kemungkinan = set()
+                    for i, k in enumerate(kations):
+                        for j, a in enumerate(anions):
+                            if i != j:  
+                                produk_kemungkinan.add(gabung_ion(k, a))
                     
-                    kiri = format_dict(r_setara)
-                    kanan = format_dict(p_setara)
-                    
-                    alasan = []
-                    for p in p_setara.keys():
-                        if p == "H2O": 
-                            alasan.append(f"**molekul air (H₂O)** (elektrolit lemah)")
+                    try:
+                        r_setara, p_setara = balance_stoichiometry(set(input_raw), produk_kemungkinan)
+                        
+                        def format_dict(senyawa_dict):
+                            hasil = []
+                            for seny, koef in senyawa_dict.items():
+                                k, a = urai_senyawa(seny)
+                                wujud = "(l)" if seny == "H2O" else ("(s)" if (k and a and apakah_mengendap(k, a)) else "(aq)")
+                                prefix = "" if koef == 1 else f"{koef}"
+                                hasil.append(f"{prefix}{seny}{wujud}")
+                            return " + ".join(hasil)
+                        
+                        kiri = format_dict(r_setara)
+                        kanan = format_dict(p_setara)
+                        
+                        alasan = []
+                        for p in p_setara.keys():
+                            if p == "H2O": 
+                                alasan.append(f"**molekul air (H₂O)** (elektrolit lemah)")
+                            else:
+                                kp, ap = urai_senyawa(p)
+                                if kp and ap and apakah_mengendap(kp, ap):
+                                    alasan.append(f"endapan **{p}**")
+                                    
+                        st.success("✅ Secara Teori: REAKSI BERLANGSUNG (Valid)")
+                        st.markdown("### Persamaan Reaksi Setara:")
+                        st.latex(f"{kiri} \\rightarrow {kanan}")
+                        
+                        if alasan:
+                            st.markdown(f"**Driving Force:** Reaksi dapat berlangsung ke arah produk karena terbentuk {', '.join(alasan)}.")
                         else:
-                            kp, ap = urai_senyawa(p)
-                            if kp and ap and apakah_mengendap(kp, ap):
-                                alasan.append(f"endapan **{p}**")
+                            st.info("ℹ️ Tidak ada endapan atau air yang terbentuk. Dalam dunia nyata, semua ion mungkin hanya bercampur dalam larutan (reaksi tidak berkesudahan).")
+                        
+                        st.divider()
+                        
+                        st.markdown("### 🔍 Lembar Kerja Analisis Ion")
+                        cols_urai = st.columns(len(input_raw))
+                        
+                        for idx, (k, a) in enumerate(parsed_reactants):
+                            c_k, c_a = fmt_muatan(kation_db[k][0], '+'), fmt_muatan(abs(anion_db[a][0]), '-')
+                            with cols_urai[idx]:
+                                st.markdown(f"**Penguraian Reaktan {idx+1}:**")
+                                st.latex(f"{input_raw[idx]} \\longrightarrow {k}^{{{c_k}}} + {a}^{{{c_a}}}")
                                 
-                    st.success("✅ Secara Teori: REAKSI BERLANGSUNG (Valid)")
-                    st.markdown("### Persamaan Reaksi Setara:")
-                    st.latex(f"{kiri} \\rightarrow {kanan}")
-                    
-                    if alasan:
-                        st.markdown(f"**Driving Force:** Reaksi dapat berlangsung ke arah produk karena terbentuk {', '.join(alasan)}.")
-                    else:
-                        st.info("ℹ️ Tidak ada endapan atau air yang terbentuk. Dalam dunia nyata, semua ion mungkin hanya bercampur dalam larutan (reaksi tidak berkesudahan).")
-                    
-                    st.divider()
-                    
-                    st.markdown("### 🔍 Lembar Kerja Analisis Ion")
-                    cols_urai = st.columns(len(input_raw))
-                    
-                    for idx, (k, a) in enumerate(parsed_reactants):
-                        c_k, c_a = fmt_muatan(kation_db[k][0], '+'), fmt_muatan(abs(anion_db[a][0]), '-')
-                        with cols_urai[idx]:
-                            st.markdown(f"**Penguraian Reaktan {idx+1}:**")
-                            st.latex(f"{input_raw[idx]} \\longrightarrow {k}^{{{c_k}}} + {a}^{{{c_a}}}")
-                            
-                    st.info("💡 **Aturan Silang Muatan:** Kation (positif) dari satu reaktan bertukar pasangan dengan Anion (negatif) dari reaktan lain membentuk senyawa baru: $A^{x+} + B^{y-} \\rightarrow A_yB_x$")
-                    
-                    cols_prod = st.columns(len(p_setara))
-                    for idx, p in enumerate(p_setara.keys()):
-                        k_p, a_p = urai_senyawa(p)
-                        if k_p and a_p:
-                            c_k = fmt_muatan(kation_db[k_p][0], '+')
-                            c_a = fmt_muatan(abs(anion_db[a_p][0]), '-')
-                            with cols_prod[idx % len(cols_prod)]:
-                                st.markdown(f"**Silang Produk {idx+1}:**")
-                                st.latex(f"{k_p}^{{{c_k}}} + {a_p}^{{{c_a}}} \\longrightarrow {p}")
-                                
-                except Exception as e:
-                    st.error("❌ Reaksi silang tidak dapat disetarakan secara matematis. Kombinasi ion antar reaktan mungkin tidak menghasilkan set produk yang valid secara persamaan kimia.")
+                        st.info("💡 **Aturan Silang Muatan:** Kation (positif) dari satu reaktan bertukar pasangan dengan Anion (negatif) dari reaktan lain membentuk senyawa baru: $A^{x+} + B^{y-} \\rightarrow A_yB_x$")
+                        
+                        cols_prod = st.columns(len(p_setara))
+                        for idx, p in enumerate(p_setara.keys()):
+                            k_p, a_p = urai_senyawa(p)
+                            if k_p and a_p:
+                                c_k = fmt_muatan(kation_db[k_p][0], '+')
+                                c_a = fmt_muatan(abs(anion_db[a_p][0]), '-')
+                                with cols_prod[idx % len(cols_prod)]:
+                                    st.markdown(f"**Silang Produk {idx+1}:**")
+                                    st.latex(f"{k_p}^{{{c_k}}} + {a_p}^{{{c_a}}} \\longrightarrow {p}")
+                                    
+                    except Exception as e:
+                        st.error("❌ Reaksi silang tidak dapat disetarakan secara matematis. Kombinasi ion antar reaktan mungkin tidak menghasilkan set produk yang valid secara persamaan kimia.")
+        
