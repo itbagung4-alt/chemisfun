@@ -504,4 +504,4 @@ elif st.session_state.app_mode == "metatesis":
                                     
                     except Exception as e:
                         st.error("❌ Reaksi silang tidak dapat disetarakan secara matematis. Kombinasi ion antar reaktan mungkin tidak menghasilkan set produk yang valid secara persamaan kimia.")
-    
+            
