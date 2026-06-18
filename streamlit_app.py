@@ -5,7 +5,7 @@ from chempy import balance_stoichiometry
 
 # ─── 1. KONFIGURASI HALAMAN ─────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Portal Analisis Kimia",
+    page_title="Chemisfun - Portal Analisis Kimia",
     page_icon="🧪",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -208,7 +208,7 @@ if st.session_state.app_mode == "portal":
     st.markdown("""
     <div class="landing-hero">
         <div class="hero-badge">Aplikasi Pendidikan Interaktif</div>
-        <h1 class="hero-title">Portal Analisis <span class="hero-accent">Kimia Terpadu</span></h1>
+        <h1 class="hero-title">Chemisfun<br><span style="font-size: 0.65em;">Portal Analisis <span class="hero-accent">Kimia Terpadu</span></span></h1>
         <p class="hero-desc">Pilih modul simulasi laboratorium virtual yang ingin Anda akses di bawah ini.</p>
     </div>
     
@@ -506,4 +506,3 @@ elif st.session_state.app_mode == "metatesis":
                                     
                     except Exception as e:
                         st.error("❌ Reaksi silang tidak dapat disetarakan secara matematis. Kombinasi ion antar reaktan mungkin tidak menghasilkan set produk yang valid secara persamaan kimia.")
-                    
