@@ -198,9 +198,6 @@ def fmt_muatan(nilai, tanda):
 if "app_mode" not in st.session_state: st.session_state.app_mode = "portal"
 if "halaman_org" not in st.session_state: st.session_state.halaman_org = "landing"
 
-def go_portal(): st.session_state.app_mode = "portal"
-def nav_org(page): st.session_state.halaman_org = page; st.session_state.app_mode = "organik"; st.rerun()
-
 # ════════════════════════════════════════════════════════════════════════════════
 #  A. PORTAL UTAMA
 # ════════════════════════════════════════════════════════════════════════════════
@@ -225,13 +222,16 @@ if st.session_state.app_mode == "portal":
     with col2:
         st.markdown('<div class="portal-card"><h1>🔬</h1><h3>Identifikasi Organik</h3><p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Analisis kualitatif berdasarkan pengujian pereaksi untuk identifikasi golongan organik.</p>', unsafe_allow_html=True)
         if st.button("Masuk Modul Organik ➔", use_container_width=True, type="primary"):
-            st.session_state.halaman_org = "landing"; st.session_state.app_mode = "organik"; st.rerun()
+            st.session_state.halaman_org = "landing"
+            st.session_state.app_mode = "organik"
+            st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col3:
         st.markdown('<div class="portal-card"><h1>⚗️</h1><h3>Reaksi Metatesis</h3><p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Prediksi produk reaksi pertukaran ganda dan penyetaraan persamaan kimia otomatis.</p>', unsafe_allow_html=True)
         if st.button("Masuk Modul Metatesis ➔", use_container_width=True, type="primary"):
-            st.session_state.app_mode = "metatesis"; st.rerun()
+            st.session_state.app_mode = "metatesis"
+            st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -239,18 +239,34 @@ if st.session_state.app_mode == "portal":
 # ════════════════════════════════════════════════════════════════════════════════
 elif st.session_state.app_mode == "organik":
     if st.session_state.halaman_org == "landing":
-        st.button("🏠 Kembali ke Portal Utama", on_click=go_portal)
+        if st.button("🏠 Kembali ke Portal Utama"):
+            st.session_state.app_mode = "portal"
+            st.rerun()
+            
         st.markdown('<div class="landing-hero" style="padding-top:1rem;"><div class="hero-badge">⚗️ Kimia Organik</div><h1 class="hero-title">Sistem Identifikasi<br><span class="hero-accent">Senyawa Organik</span></h1></div>', unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
         with col1:
-            if st.button("🔬 Mulai Identifikasi", use_container_width=True, type="primary"): nav_org("identifikasi")
+            if st.button("🔬 Mulai Identifikasi", use_container_width=True, type="primary"):
+                st.session_state.halaman_org = "identifikasi"
+                st.session_state.app_mode = "organik"
+                st.rerun()
         with col2:
-            if st.button("🗄️ Database Senyawa", use_container_width=True): nav_org("database")
+            if st.button("🗄️ Database Senyawa", use_container_width=True):
+                st.session_state.halaman_org = "database"
+                st.session_state.app_mode = "organik"
+                st.rerun()
         with col3:
-            if st.button("📚 Dasar Teori", use_container_width=True): nav_org("teori")
+            if st.button("📚 Dasar Teori", use_container_width=True):
+                st.session_state.halaman_org = "teori"
+                st.session_state.app_mode = "organik"
+                st.rerun()
 
     elif st.session_state.halaman_org == "identifikasi":
-        if st.button("← Kembali ke Menu Organik"): nav_org("landing")
+        if st.button("← Kembali ke Menu Organik"):
+            st.session_state.halaman_org = "landing"
+            st.session_state.app_mode = "organik"
+            st.rerun()
+            
         st.markdown('<h2 class="page-title">🔬 Form Identifikasi Laboratorium</h2>', unsafe_allow_html=True)
         st.markdown("Pilih hasil pengamatan dari reagen uji yang ditambahkan ke dalam sampel uji Anda.")
         
@@ -294,8 +310,11 @@ elif st.session_state.app_mode == "organik":
             st.markdown('</div>', unsafe_allow_html=True)
 
     elif st.session_state.halaman_org == "database":
-        if st.button("← Kembali ke Menu Organik"): nav_org("landing")
-        
+        if st.button("← Kembali ke Menu Organik"):
+            st.session_state.halaman_org = "landing"
+            st.session_state.app_mode = "organik"
+            st.rerun()
+            
         # Banner Header Hiasan
         st.markdown("""
         <div style="background: linear-gradient(135deg, #e0f2fe, #bae6fd); padding: 1.5rem; border-radius: 12px; border-left: 5px solid #0284c7; margin-bottom: 2rem; box-shadow: var(--shadow);">
@@ -331,7 +350,11 @@ elif st.session_state.app_mode == "organik":
             st.info("**Pencegahan Kontaminasi Silang:** Pastikan tabung reaksi dalam keadaan benar-benar bersih dan kering sebelum melakukan uji spesifik. Residu dari uji sebelumnya (terutama pada Uji Tollens dan Lucas) dapat mengganggu hasil reaksi visual yang diharapkan.")
 
     elif st.session_state.halaman_org == "teori":
-        if st.button("← Kembali ke Menu Organik"): nav_org("landing")
+        if st.button("← Kembali ke Menu Organik"):
+            st.session_state.halaman_org = "landing"
+            st.session_state.app_mode = "organik"
+            st.rerun()
+            
         st.markdown('<h2 class="page-title">📚 Dasar Teori Analisis Organik</h2>', unsafe_allow_html=True)
         
         st.markdown("""
@@ -385,7 +408,10 @@ elif st.session_state.app_mode == "organik":
 #  C. MODUL: REAKSI METATESIS
 # ════════════════════════════════════════════════════════════════════════════════
 elif st.session_state.app_mode == "metatesis":
-    st.button("🏠 Kembali ke Portal Utama", on_click=go_portal)
+    if st.button("🏠 Kembali ke Portal Utama"):
+        st.session_state.app_mode = "portal"
+        st.rerun()
+        
     st.markdown('<h1 class="page-title">🧪 Analisis Stoikiometri & Metatesis</h1>', unsafe_allow_html=True)
     st.markdown("Sistem mendeteksi muatan ion secara otomatis untuk menyilangkan produk reaktan secara instan.")
     st.divider()
